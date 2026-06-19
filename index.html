@@ -96,6 +96,21 @@
   footer{border-top:1px solid var(--line);padding:30px 0;color:var(--faint);font-size:13px;text-align:center}
   footer a{color:var(--dim)}
   @media(max-width:860px){.hero{grid-template-columns:1fr;padding:50px 0 30px}h1{font-size:38px}.links a{display:none}.grid,.steps{grid-template-columns:1fr}.app{transform:none}}
+  .gate{position:fixed;inset:0;z-index:100;background:rgba(8,9,12,.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px}
+  .gate.show{display:flex}
+  .gatebox{max-width:470px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;box-shadow:0 40px 100px rgba(0,0,0,.6);position:relative;max-height:92vh;overflow:auto}
+  .gatebox h3{font-size:22px;letter-spacing:-.02em;margin-bottom:8px}
+  .gatebox .gp{color:var(--dim);font-size:14px;line-height:1.55;margin-bottom:18px}
+  .gclose{position:absolute;top:14px;right:16px;color:var(--faint);font-size:22px;cursor:pointer;line-height:1;background:none;border:0}
+  .soc{display:flex;align-items:center;gap:12px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:8px 0;color:var(--txt);text-decoration:none;cursor:pointer;font-weight:600;font-size:14px;transition:.15s;text-align:left}
+  .soc:hover{background:var(--elev)}
+  .soc.done{border-color:#22c55e;background:rgba(34,197,94,.12)}
+  .soc .si{width:26px;height:26px;border-radius:7px;background:var(--elev);display:grid;place-items:center;font-size:13px;font-weight:700;flex:0 0 auto}
+  .soc .chk{margin-left:auto;color:var(--faint);font-size:16px}
+  .soc.done .chk{color:#22c55e}
+  .gcount{text-align:center;color:var(--faint);font-size:12px;margin:12px 0 6px}
+  .dlbtn{width:100%;padding:14px;border-radius:12px;border:0;font-weight:700;font-size:15px;font-family:inherit;cursor:not-allowed;background:var(--elev);color:var(--faint);transition:.2s}
+  .dlbtn.ready{cursor:pointer;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;box-shadow:0 10px 30px rgba(245,158,11,.45)}
 </style>
 </head>
 <body>
@@ -107,7 +122,7 @@
     <a href="#fonctionnalites">Fonctionnalités</a>
     <a href="#installation">Installation</a>
     <a href="#faq">FAQ</a>
-    <a class="btn btn-primary" href="https://github.com/skillitny/klip-app/releases/download/v2.4.0/Klip-2.4.0.dmg">Télécharger</a>
+    <a class="btn btn-primary" href="#" onclick="openGate(event)">Télécharger</a>
   </div>
 </div></nav>
 
@@ -117,7 +132,7 @@
     <h1>Le presse-papiers<br><span class="g">qui n'oublie rien.</span></h1>
     <p class="sub">Tout ce que tu copies, retrouvé en un raccourci. Texte, images, captures — gardés en sécurité sur ton Mac, jamais envoyés sur Internet.</p>
     <div class="cta">
-      <a class="btn btn-primary" href="https://github.com/skillitny/klip-app/releases/download/v2.4.0/Klip-2.4.0.dmg">Télécharger pour Mac</a>
+      <a class="btn btn-primary" href="#" onclick="openGate(event)">Télécharger pour Mac</a>
       <a class="btn btn-ghost" href="#licence">Demander une licence</a>
     </div>
     <p class="meta">macOS Apple Silicon (M1–M4) · ~91 Mo · Ouvre avec <kbd>⌥</kbd> <kbd>⌘</kbd> <kbd>V</kbd></p>
@@ -204,5 +219,61 @@
 </section>
 
 <footer><div class="wrap">Un produit <b style="color:var(--dim)">HUMAIN</b> — créé par Sarah · <a href="https://humain01.com">humain01.com</a></div></footer>
+
+<div class="gate" id="gate">
+  <div class="gatebox">
+    <button class="gclose" onclick="closeGate()" aria-label="Fermer">×</button>
+    <h3>Suis HUMAIN pour débloquer 🔓</h3>
+    <p class="gp">Klip est <b style="color:#EEF0F6">100% gratuit</b>. En échange, soutiens-nous : clique chaque réseau (ça l'ouvre, abonne-toi), puis le bouton de téléchargement se débloque.</p>
+    <div id="socs"></div>
+    <div class="gcount" id="gcount">0 / 7 réseaux</div>
+    <button class="dlbtn" id="dlbtn" disabled onclick="doDownload()">Suis les réseaux pour débloquer</button>
+  </div>
+</div>
+
+<script>
+  var DMG="https://github.com/skillitny/klip-app/releases/download/v2.4.0/Klip-2.4.0.dmg";
+  var NETS=[
+    {n:"X (Twitter)",u:"https://x.com/humain_01",i:"𝕏"},
+    {n:"Instagram",u:"https://instagram.com/humain01",i:"◎"},
+    {n:"TikTok",u:"https://www.tiktok.com/@humain01.ai",i:"♪"},
+    {n:"YouTube",u:"https://www.youtube.com/@humain01",i:"▶"},
+    {n:"LinkedIn",u:"https://www.linkedin.com/company/humain-01",i:"in"},
+    {n:"Threads",u:"https://www.threads.net/@humain01",i:"@"},
+    {n:"Facebook",u:"https://www.facebook.com/profile.php?id=61573315321018",i:"f"}
+  ];
+  var done={};
+  function buildSocs(){
+    var c=document.getElementById('socs'); c.innerHTML='';
+    NETS.forEach(function(net,idx){
+      var a=document.createElement('button');
+      a.className='soc'+(done[idx]?' done':'');
+      a.innerHTML='<span class="si">'+net.i+'</span> Suivre sur '+net.n+' <span class="chk">'+(done[idx]?'✓':'○')+'</span>';
+      a.onclick=function(){ window.open(net.u,'_blank','noopener'); done[idx]=true; buildSocs(); refresh(); };
+      c.appendChild(a);
+    });
+  }
+  function refresh(){
+    var n=Object.keys(done).length, t=NETS.length;
+    document.getElementById('gcount').textContent=n+' / '+t+' réseaux';
+    var b=document.getElementById('dlbtn');
+    if(n>=t){ b.disabled=false; b.classList.add('ready'); b.textContent='⬇ Télécharger Klip'; }
+    else{ b.disabled=true; b.classList.remove('ready'); b.textContent='Suis les '+(t-n)+' réseaux restants'; }
+  }
+  function openGate(e){
+    if(e) e.preventDefault();
+    if(localStorage.getItem('klip_unlocked')){ window.location.href=DMG; return; }
+    buildSocs(); refresh();
+    document.getElementById('gate').classList.add('show');
+  }
+  function closeGate(){ document.getElementById('gate').classList.remove('show'); }
+  function doDownload(){
+    if(Object.keys(done).length<NETS.length) return;
+    localStorage.setItem('klip_unlocked','1');
+    closeGate();
+    window.location.href=DMG;
+  }
+  document.getElementById('gate').addEventListener('click',function(e){ if(e.target===this) closeGate(); });
+</script>
 </body>
 </html>
