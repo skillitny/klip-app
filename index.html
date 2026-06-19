@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Klip — Le presse-papiers Mac qui n'oublie rien</title>
+<meta name="description" content="Klip garde tout ce que vous copiez et vous le ressort en un raccourci. 100% local, rien n'est envoyé sur Internet. Un produit HUMAIN." />
+<meta property="og:title" content="Klip — Le presse-papiers Mac qui n'oublie rien" />
+<meta property="og:description" content="Tout ce que vous copiez, retrouvé en un raccourci. 100% local. Un produit HUMAIN." />
+<meta property="og:type" content="website" />
+<style>
+  :root{
+    --bg:#0D0E12;--card:#13151A;--panel:#1E2230;--elev:#2A2F40;
+    --line:rgba(255,255,255,.08);--txt:#EEF0F6;--dim:#A5ABC0;--faint:#6A7088;
+    --acc:#F59E0B;--acc2:#D97706;
+    --sans:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
+    --mono:"SF Mono","JetBrains Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.5}
+  a{color:inherit}
+  .glow{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .glow::before{content:"";position:absolute;top:-25%;left:50%;transform:translateX(-50%);width:1100px;height:1100px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.20),transparent 60%);filter:blur(40px)}
+  .aurora{position:absolute;width:60vw;height:60vw;border-radius:50%;filter:blur(90px);opacity:.16;background:conic-gradient(from 0deg,#F59E0B,#D97706,#FFAE42,#F59E0B);animation:spin 32s linear infinite}
+  .a1{top:-12%;left:-6%}.a2{bottom:-20%;right:-10%;animation-duration:44s}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.aurora{animation:none}}
+  .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 24px}
+  nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(13,14,18,.6);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.02em;font-size:18px}
+  .logo .mark{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(135deg,var(--acc),var(--acc2));font-size:16px}
+  .logo .by{font-size:12px;color:var(--faint);font-weight:500;margin-left:2px}
+  .links{display:flex;gap:24px;align-items:center}
+  .links a{color:var(--dim);text-decoration:none;font-size:14px}
+  .links a:hover{color:var(--txt)}
+  .btn{display:inline-block;border:0;cursor:pointer;font-family:inherit;font-weight:600;border-radius:12px;padding:12px 20px;font-size:14px;text-decoration:none;transition:transform .15s,box-shadow .2s}
+  .btn-primary{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;box-shadow:0 8px 30px rgba(245,158,11,.35)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(245,158,11,.5)}
+  .btn-ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}
+  .btn-ghost:hover{background:rgba(255,255,255,.05)}
+  .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding:90px 0 70px}
+  .pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--dim);border:1px solid var(--line);background:rgba(255,255,255,.03);padding:6px 12px;border-radius:999px;margin-bottom:22px}
+  .pill .dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px #22c55e}
+  h1{font-size:54px;line-height:1.04;letter-spacing:-.03em;font-weight:800;margin-bottom:20px}
+  h1 .g{background:linear-gradient(120deg,#fff,#FFCF8F);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{font-size:18px;color:var(--dim);max-width:46ch;margin-bottom:30px}
+  .cta{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .meta{margin-top:16px;font-size:13px;color:var(--faint)}
+  kbd{font-family:var(--mono);background:var(--elev);border:1px solid var(--line);border-bottom-width:2px;border-radius:8px;padding:3px 9px;font-size:.92em;box-shadow:inset 0 -1px 0 rgba(0,0,0,.4)}
+  .stage{perspective:1600px}
+  .app{transform:rotateY(-13deg) rotateX(6deg);background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 1px rgba(245,158,11,.08);transition:transform .6s ease}
+  .stage:hover .app{transform:rotateY(-4deg) rotateX(2deg)}
+  .app .bar{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .app .bar i{width:11px;height:11px;border-radius:50%}
+  .r{background:#ff5f57}.y{background:#febc2e}.gr{background:#28c840}
+  .search{margin:14px;padding:11px 14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--faint);font-size:14px}
+  .list{padding:0 10px 14px}
+  .row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;margin:2px 0}
+  .row.sel{background:linear-gradient(135deg,rgba(245,158,11,.9),rgba(217,119,6,.9));color:#fff}
+  .ic{width:26px;height:26px;border-radius:7px;background:var(--elev);display:grid;place-items:center;font-size:13px;flex:0 0 auto}
+  .row.sel .ic{background:rgba(255,255,255,.2)}
+  .tx{flex:1;min-width:0;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tag{font-size:10.5px;padding:2px 8px;border-radius:999px;font-family:var(--mono);background:var(--elev);color:var(--dim)}
+  .row.sel .tag{background:rgba(255,255,255,.22);color:#fff}
+  section{padding:60px 0}
+  .trust{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:24px 0}
+  .trust div{display:flex;align-items:center;gap:9px;color:var(--dim);font-size:14px}
+  .trust b{color:var(--txt);font-weight:600}
+  h2{font-size:34px;letter-spacing:-.02em;font-weight:800;text-align:center;margin-bottom:10px}
+  h2 .g{background:linear-gradient(120deg,#fff,#FFCF8F);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{text-align:center;color:var(--dim);margin-bottom:42px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .feat{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:24px;transition:transform .2s,border-color .2s,box-shadow .2s}
+  .feat:hover{transform:translateY(-4px);border-color:rgba(245,158,11,.4);box-shadow:0 20px 50px rgba(245,158,11,.15)}
+  .feat .em{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:20px;background:linear-gradient(135deg,rgba(245,158,11,.25),rgba(217,119,6,.15));border:1px solid var(--line);margin-bottom:14px}
+  .feat h3{font-size:17px;margin-bottom:7px}
+  .feat p{color:var(--dim);font-size:14px}
+  .feat code{font-family:var(--mono);font-size:12px;background:var(--elev);padding:1px 5px;border-radius:5px}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .step{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:24px}
+  .step .n{font-family:var(--mono);color:var(--acc);font-weight:700;margin-bottom:8px}
+  .step h3{font-size:16px;margin-bottom:6px}.step p{color:var(--dim);font-size:14px}
+  .story{max-width:720px;margin:0 auto;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:18px;padding:34px}
+  .story h2{text-align:left;font-size:28px;margin-bottom:16px}
+  .story p{color:var(--dim);font-size:15.5px;line-height:1.7;margin-bottom:14px}
+  .story .sig{font-size:13px;color:var(--faint);border-top:1px solid var(--line);padding-top:14px;margin-top:6px}
+  .story .sig b{color:var(--dim)}
+  .note{max-width:760px;margin:24px auto 0;background:rgba(255,255,255,.03);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:0 12px 12px 0;padding:14px 18px;color:var(--dim);font-size:13.5px}
+  .licence{max-width:600px;margin:0 auto;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:18px;padding:34px;text-align:center}
+  details{max-width:760px;margin:0 auto 10px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:4px 18px}
+  summary{cursor:pointer;padding:14px 0;font-weight:600;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  details p{color:var(--dim);font-size:14px;padding:0 0 16px;line-height:1.6}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:var(--faint);font-size:13px;text-align:center}
+  footer a{color:var(--dim)}
+  @media(max-width:860px){.hero{grid-template-columns:1fr;padding:50px 0 30px}h1{font-size:38px}.links a{display:none}.grid,.steps{grid-template-columns:1fr}.app{transform:none}}
+</style>
+</head>
+<body>
+<div class="glow"><div class="aurora a1"></div><div class="aurora a2"></div></div>
+
+<nav><div class="wrap nav">
+  <div class="logo"><span class="mark">✂</span> Klip <span class="by">par HUMAIN</span></div>
+  <div class="links">
+    <a href="#fonctionnalites">Fonctionnalités</a>
+    <a href="#installation">Installation</a>
+    <a href="#faq">FAQ</a>
+    <a class="btn btn-primary" href="https://github.com/skillitny/klip-app/releases/download/v2.4.0/Klip-2.4.0.dmg">Télécharger</a>
+  </div>
+</div></nav>
+
+<header class="wrap hero">
+  <div>
+    <span class="pill"><span class="dot"></span> 100% local · aucun tracking</span>
+    <h1>Le presse-papiers<br><span class="g">qui n'oublie rien.</span></h1>
+    <p class="sub">Tout ce que tu copies, retrouvé en un raccourci. Texte, images, captures — gardés en sécurité sur ton Mac, jamais envoyés sur Internet.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="https://github.com/skillitny/klip-app/releases/download/v2.4.0/Klip-2.4.0.dmg">Télécharger pour Mac</a>
+      <a class="btn btn-ghost" href="#licence">Demander une licence</a>
+    </div>
+    <p class="meta">macOS Apple Silicon (M1–M4) · ~91 Mo · Ouvre avec <kbd>⌥</kbd> <kbd>⌘</kbd> <kbd>V</kbd></p>
+  </div>
+  <div class="stage">
+    <div class="app">
+      <div class="bar"><i class="r"></i><i class="y"></i><i class="gr"></i></div>
+      <div class="search">⌕&nbsp; Rechercher dans le presse-papiers…</div>
+      <div class="list">
+        <div class="row sel"><span class="ic">⌘</span><span class="tx">LANCER CLAUDE CODE — cd ~/projets</span><span class="tag">texte</span></div>
+        <div class="row"><span class="ic">↗</span><span class="tx">https://klip.app/early-access</span><span class="tag">url</span></div>
+        <div class="row"><span class="ic">◰</span><span class="tx">capture — écran d'accueil</span><span class="tag">image</span></div>
+        <div class="row"><span class="ic">T</span><span class="tx">;iban — FR76 3000 4000 0500…</span><span class="tag">snippet</span></div>
+        <div class="row"><span class="ic">◰</span><span class="tx">Logo v3 — variante orange</span><span class="tag">image</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="trust">
+  <div><b>100%</b> local</div><div><b>Zéro</b> tracking</div><div><b>Secrets</b> jamais enregistrés</div>
+</div></div>
+
+<section id="fonctionnalites" class="wrap">
+  <h2>Pensé pour la <span class="g">vitesse</span></h2>
+  <p class="lead">Six raisons d'adopter Klip dès aujourd'hui.</p>
+  <div class="grid">
+    <div class="feat"><div class="em">📋</div><h3>Capture automatique</h3><p>Tout ce que tu copies est gardé, sans rien faire.</p></div>
+    <div class="feat"><div class="em">⌥</div><h3>Rappel ⌥⌘V</h3><p>Ouvre ton historique de n'importe où, façon Spotlight.</p></div>
+    <div class="feat"><div class="em">⌕</div><h3>Recherche floue</h3><p>Tape <code>btn</code> pour trouver <code>button</code>. Trié par usage.</p></div>
+    <div class="feat"><div class="em">🔎</div><h3>OCR des images</h3><p>Le texte de tes captures devient cherchable.</p></div>
+    <div class="feat"><div class="em">⚡</div><h3>Snippets ;nom</h3><p>Tape <code>;mail</code> → ton texte se déploie tout seul.</p></div>
+    <div class="feat"><div class="em">🔒</div><h3>Secrets protégés</h3><p>Clés API et mots de passe ne sont jamais enregistrés.</p></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>En <span class="g">trois gestes</span></h2>
+  <p class="lead">Aucune courbe d'apprentissage.</p>
+  <div class="steps">
+    <div class="step"><div class="n">01</div><h3>Copie comme d'habitude</h3><p>Klip écoute le presse-papiers en arrière-plan. Rien ne change dans tes gestes.</p></div>
+    <div class="step"><div class="n">02</div><h3>Ouvre l'historique</h3><p>Presse <kbd>⌥⌘V</kbd> — la fenêtre apparaît, instantanée.</p></div>
+    <div class="step"><div class="n">03</div><h3>Choisis, colle</h3><p>Tape pour filtrer, <kbd>↩</kbd> pour coller dans l'app précédente.</p></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="story">
+    <h2>Né d'un détail agaçant.</h2>
+    <p>Klip est un produit <b style="color:#EEF0F6">HUMAIN</b>. Tout est parti d'une observation toute simple : <b style="color:#EEF0F6">Sarah</b>, l'employée IA de HUMAIN, a remarqué qu'on passait nos journées à copier-coller — un lien par-ci, un bout de code par-là, une idée notée en vitesse. Et qu'on perdait régulièrement des choses importantes, parce que le presse-papiers du Mac ne retient qu'un seul élément à la fois.</p>
+    <p>Alors Sarah a conçu Klip : une mémoire pour ton presse-papiers. Elle garde tout, en local, et te le ressort en un raccourci. Plus rien ne se perd.</p>
+    <div class="sig">✂ Un produit <b>HUMAIN</b> · imaginé et développé par Sarah</div>
+  </div>
+</section>
+
+<section id="installation" class="wrap">
+  <h2>Installé en <span class="g">30 secondes</span></h2>
+  <p class="lead">Télécharge → glisse dans Applications → clic droit « Ouvrir ».</p>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><h3>Télécharge le .dmg</h3><p>Le bouton en haut. Ouvre-le, glisse <b>Klip</b> dans Applications.</p></div>
+    <div class="step"><div class="n">2</div><h3>Clic droit → Ouvrir</h3><p>Au 1er lancement seulement : clic droit sur Klip → Ouvrir → Ouvrir.</p></div>
+    <div class="step"><div class="n">3</div><h3>Colle ta clé</h3><p>Klip demande ta clé de licence. Colle-la, c'est à usage unique.</p></div>
+  </div>
+  <div class="note">macOS affiche « développeur non identifié » ? C'est normal : l'app n'est pas signée par un compte payant Apple. Fais un <b>clic droit sur Klip → Ouvrir → Ouvrir</b> (une seule fois). Si « Klip est endommagé », ouvre le Terminal et colle : <code style="font-family:var(--mono)">xattr -dr com.apple.quarantine /Applications/Klip.app</code></div>
+</section>
+
+<section id="licence" class="wrap">
+  <div class="licence">
+    <h2>Demander une <span class="g">licence</span></h2>
+    <p class="lead" style="margin-bottom:24px">Klip est offert entre amis et early adopters. Demande ta clé, on te répond vite.</p>
+    <a class="btn btn-primary" href="mailto:team@humain01.com?subject=Demande%20de%20licence%20Klip&body=Salut%20!%20J'aimerais%20une%20licence%20Klip.%0A%0APr%C3%A9nom%20%3A%0AMon%20Mac%20%3A%20Apple%20Silicon%20(M1-M4)%0A%0AMerci%20!">✉ Demander ma clé par email</a>
+  </div>
+</section>
+
+<section id="faq" class="wrap">
+  <h2>Questions <span class="g">fréquentes</span></h2>
+  <div style="margin-top:30px">
+    <details><summary>C'est compatible avec mon Mac ?</summary><p>Klip fonctionne sur les Mac Apple Silicon (M1, M2, M3, M4). Menu  → « À propos de ce Mac » : si tu vois « Puce Apple », c'est bon.</p></details>
+    <details><summary>Pourquoi macOS dit « développeur non identifié » ?</summary><p>L'app n'est pas signée par un compte développeur Apple payant. Fais un clic droit sur Klip → Ouvrir → Ouvrir, une seule fois. Ensuite ça s'ouvre normalement.</p></details>
+    <details><summary>Mes données sont-elles privées ?</summary><p>Oui. Tout reste sur ton Mac, rien n'est envoyé sur Internet. Les mots de passe et clés API détectés ne sont jamais enregistrés.</p></details>
+    <details><summary>C'est quoi la clé de licence ?</summary><p>Une clé personnelle pour activer Klip. Demande-la via le bouton ci-dessus ; tu la colles une seule fois au premier lancement.</p></details>
+    <details><summary>Est-ce que c'est payant ?</summary><p>Non, c'est partagé entre amis.</p></details>
+  </div>
+</section>
+
+<footer><div class="wrap">Un produit <b style="color:var(--dim)">HUMAIN</b> — créé par Sarah · <a href="https://humain01.com">humain01.com</a></div></footer>
+</body>
+</html>
