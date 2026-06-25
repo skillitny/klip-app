@@ -108,9 +108,9 @@
   .soc .si{width:26px;height:26px;border-radius:7px;background:var(--elev);display:grid;place-items:center;font-size:13px;font-weight:700;flex:0 0 auto}
   .soc .chk{margin-left:auto;color:var(--faint);font-size:16px}
   .soc.done .chk{color:#22c55e}
-  .gcount{text-align:center;color:var(--faint);font-size:12px;margin:12px 0 6px}
-  .dlbtn{width:100%;padding:14px;border-radius:12px;border:0;font-weight:700;font-size:15px;font-family:inherit;cursor:not-allowed;background:var(--elev);color:var(--faint);transition:.2s}
-  .dlbtn.ready{cursor:pointer;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;box-shadow:0 10px 30px rgba(245,158,11,.45)}
+  .gicon{font-size:34px;line-height:1;margin-bottom:10px}
+  .gp a{color:var(--acc);text-decoration:none;font-weight:600}
+  .gp a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -122,7 +122,7 @@
     <a href="#fonctionnalites">Fonctionnalités</a>
     <a href="#installation">Installation</a>
     <a href="#faq">FAQ</a>
-    <a class="btn btn-primary" href="#" onclick="openGate(event)">Télécharger</a>
+    <a class="btn btn-primary" href="#" onclick="getKlip(event)">Télécharger</a>
   </div>
 </div></nav>
 
@@ -132,7 +132,7 @@
     <h1>Le presse-papiers<br><span class="g">qui n'oublie rien.</span></h1>
     <p class="sub">Tout ce que tu copies, retrouvé en un raccourci. Texte, images, captures — gardés en sécurité sur ton Mac, jamais envoyés sur Internet.</p>
     <div class="cta">
-      <a class="btn btn-primary" href="#" onclick="openGate(event)">Télécharger pour Mac</a>
+      <a class="btn btn-primary" href="#" onclick="getKlip(event)">Télécharger pour Mac</a>
       <a class="btn btn-ghost" href="#fonctionnalites">Voir les fonctionnalités</a>
     </div>
     <p class="meta">macOS Apple Silicon (M1–M4) · ~91 Mo · Ouvre avec <kbd>⌥</kbd> <kbd>⌘</kbd> <kbd>V</kbd></p>
@@ -205,7 +205,7 @@
     <details><summary>C'est compatible avec mon Mac ?</summary><p>Klip fonctionne sur les Mac Apple Silicon (M1, M2, M3, M4). Menu  → « À propos de ce Mac » : si tu vois « Puce Apple », c'est bon.</p></details>
     <details><summary>Pourquoi macOS dit « développeur non identifié » ?</summary><p>L'app n'est pas signée par un compte développeur Apple payant. Fais un clic droit sur Klip → Ouvrir → Ouvrir, une seule fois. Ensuite ça s'ouvre normalement.</p></details>
     <details><summary>Mes données sont-elles privées ?</summary><p>Oui. Tout reste sur ton Mac, rien n'est envoyé sur Internet. Les mots de passe et clés API détectés ne sont jamais enregistrés.</p></details>
-    <details><summary>Faut-il un compte ou une clé ?</summary><p>Non. Suis nos réseaux pour débloquer le téléchargement, installe, et c'est prêt — aucune clé, aucun compte.</p></details>
+    <details><summary>Faut-il un compte ou une clé ?</summary><p>Non. Téléchargement direct, aucun compte, aucune clé. Tu installes et c'est prêt. Klip a été conçu par Sarah, l'IA de HUMAIN — si tu l'aimes, suis-nous, mais rien ne t'y oblige.</p></details>
     <details><summary>Est-ce que c'est payant ?</summary><p>Non, Klip est 100% gratuit.</p></details>
   </div>
 </section>
@@ -226,11 +226,11 @@
 <div class="gate" id="gate">
   <div class="gatebox">
     <button class="gclose" onclick="closeGate()" aria-label="Fermer">×</button>
-    <h3>Suis HUMAIN pour débloquer 🔓</h3>
-    <p class="gp">Klip est <b style="color:#EEF0F6">100% gratuit</b>. En échange, soutiens-nous : clique chaque réseau (ça l'ouvre, abonne-toi), puis le bouton de téléchargement se débloque.</p>
+    <div class="gicon">🎉</div>
+    <h3>Merci — Klip se télécharge.</h3>
+    <p class="gp">Le téléchargement démarre tout seul. S'il ne se lance pas, <a href="#" onclick="startDownload();return false;">clique ici</a>. Ensuite : ouvre le .dmg, glisse Klip dans Applications, puis clic droit → Ouvrir.</p>
+    <p class="gp" style="border-top:1px solid var(--line);padding-top:16px">Klip a été imaginé et codé par <b style="color:#EEF0F6">Sarah</b>, l'employée IA de HUMAIN. Curieux de voir ce qu'elle construit d'autre&nbsp;? Suis-la 👇</p>
     <div id="socs"></div>
-    <div class="gcount" id="gcount">0 / 7 réseaux</div>
-    <button class="dlbtn" id="dlbtn" disabled onclick="doDownload()">Suis les réseaux pour débloquer</button>
   </div>
 </div>
 
@@ -241,37 +241,32 @@
     {n:"TikTok",u:"https://www.tiktok.com/@humain01.ai",i:"♪"},
     {n:"X (Twitter)",u:"https://x.com/humain_01",i:"𝕏"}
   ];
-  var done={};
+  function startDownload(){
+    var a=document.createElement('a');
+    a.href=DMG; a.setAttribute('download','');
+    document.body.appendChild(a); a.click(); a.remove();
+  }
   function buildSocs(){
     var c=document.getElementById('socs'); c.innerHTML='';
-    NETS.forEach(function(net,idx){
+    NETS.forEach(function(net){
       var a=document.createElement('button');
-      a.className='soc'+(done[idx]?' done':'');
-      a.innerHTML='<span class="si">'+net.i+'</span> Suivre sur '+net.n+' <span class="chk">'+(done[idx]?'✓':'○')+'</span>';
-      a.onclick=function(){ window.open(net.u,'_blank','noopener'); done[idx]=true; buildSocs(); refresh(); };
+      a.className='soc';
+      a.innerHTML='<span class="si">'+net.i+'</span> Suivre sur '+net.n+' <span class="chk">○</span>';
+      a.onclick=function(){
+        window.open(net.u,'_blank','noopener');
+        a.classList.add('done');
+        a.querySelector('.chk').textContent='✓';
+      };
       c.appendChild(a);
     });
   }
-  function refresh(){
-    var n=Object.keys(done).length, t=NETS.length;
-    document.getElementById('gcount').textContent=n+' / '+t+' réseaux';
-    var b=document.getElementById('dlbtn');
-    if(n>=t){ b.disabled=false; b.classList.add('ready'); b.textContent='⬇ Télécharger Klip'; }
-    else{ b.disabled=true; b.classList.remove('ready'); b.textContent='Suis les '+(t-n)+' réseaux restants'; }
-  }
-  function openGate(e){
+  function getKlip(e){
     if(e) e.preventDefault();
-    if(localStorage.getItem('klip_unlocked')){ window.location.href=DMG; return; }
-    buildSocs(); refresh();
+    startDownload();
+    buildSocs();
     document.getElementById('gate').classList.add('show');
   }
   function closeGate(){ document.getElementById('gate').classList.remove('show'); }
-  function doDownload(){
-    if(Object.keys(done).length<NETS.length) return;
-    localStorage.setItem('klip_unlocked','1');
-    closeGate();
-    window.location.href=DMG;
-  }
   document.getElementById('gate').addEventListener('click',function(e){ if(e.target===this) closeGate(); });
 </script>
 </body>
